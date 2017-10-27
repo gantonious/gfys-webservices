@@ -11,6 +11,15 @@ namespace gfys.webservices.Features
             return features.Values;
         }
 
+        public Feature GetFeature(string name)
+        {
+            if (features.ContainsKey(name))
+            {
+                return features[name];
+            }
+            return null;
+        }
+
         public void CreateFeature(Feature feature)
         {
             features[feature.Name] = feature;

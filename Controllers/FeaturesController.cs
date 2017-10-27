@@ -2,42 +2,51 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using gfys.webservices.Features;
 using Microsoft.AspNetCore.Mvc;
 
 namespace gfys.webservices.Controllers
 {
+    [Route("api/v1/features")]
     public class FeaturesController : Controller
     {
-        // GET api/values
+        private readonly IFeatureService _featureService;
+
+        public FeaturesController(IFeatureService featureService)
+        {
+            _featureService = featureService;
+        }
+
         [HttpGet]
-        public IEnumerable<string> Get()
+        public IEnumerable<Feature> GetFeatues()
         {
-            return new string[] { "value1", "value2" };
+            return _featureService.GetAllFeatures();
         }
 
-        // GET api/values/5
-        [HttpGet("{id}")]
-        public string Get(int id)
-        {
-            return "value";
-        }
-
-        // POST api/values
         [HttpPost]
-        public void Post([FromBody]string value)
+        public IActionResult Post([FromBody] Feature feature)
         {
+            _featureService.CreateFeature(feature);
+            return Created("", feature);
         }
 
-        // PUT api/values/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody]string value)
+        [HttpPut("{name}")]
+        public IActionResult Put(string name, [FromBody] Feature feature)
         {
+            if (_featureService.GetFeature(name) == null)
+            {
+                return BadRequest();
+            }
+
+            _featureService.UpdateFeature(feature);
+            return Ok();
         }
 
-        // DELETE api/values/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
+        [HttpDelete("{name}")]
+        public IActionResult Delete(string name)
         {
+            _featureService.DeleteFeature(name);
+            return NoContent();
         }
     }
 }
