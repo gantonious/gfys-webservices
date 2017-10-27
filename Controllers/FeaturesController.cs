@@ -38,6 +38,7 @@ namespace gfys.webservices.Controllers
                 return BadRequest();
             }
 
+            feature.Name = name;
             _featureService.UpdateFeature(feature);
             return Ok();
         }
